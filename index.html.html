@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>NurseReady Nigeria</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --green:#0A6B54;--green2:#0D8268;--green3:#E3F5F0;--green4:#063D30;--green5:#C8EDE5;
+  --gold:#D4962A;--gold2:#FDF3E3;
+  --ink:#13243A;--muted:#607D8B;--faint:#F4F7F6;--white:#fff;--border:#DDE8E5;
+  --red:#D63031;--red2:#FFF0F0;--red3:#8B0000;
+  --teal:#10B981;--teal2:#ECFDF5;--teal3:#065F46;
+}
+html,body{height:100%;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--faint);color:var(--ink);}
+#app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--faint);}
+.scr{display:none;min-height:100vh;flex-direction:column;}
+.scr.on{display:flex;animation:rise .25s ease;}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes shimmer{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
+
+/* SETUP */
+#scr-setup{background:linear-gradient(160deg,var(--green4) 0%,var(--green) 60%,#1a8a6e 100%);align-items:center;justify-content:center;padding:28px 22px;position:relative;overflow:hidden;}
+#scr-setup::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 0,transparent 50%);background-size:20px 20px;}
+.brand{text-align:center;margin-bottom:28px;position:relative;}
+.brand-icon{font-size:52px;display:block;margin-bottom:10px;animation:bob 3s ease-in-out infinite;}
+.brand-name{font-family:'Instrument Serif',serif;font-size:44px;color:#fff;line-height:1;}
+.brand-sub{font-size:13px;color:rgba(255,255,255,.6);margin-top:5px;}
+.setup-card{background:#fff;border-radius:22px;padding:28px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.25);}
+.setup-card h2{font-size:18px;font-weight:700;margin-bottom:6px;}
+.setup-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px;}
+.inp-row{position:relative;}
+.inp{width:100%;padding:13px 46px 13px 14px;border:2px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;color:var(--ink);outline:none;transition:border .2s;}
+.inp:focus{border-color:var(--green);}
+.inp::placeholder{color:#b0c0bc;}
+.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;}
+.hint{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.55;}
+.hint a{color:var(--green);text-decoration:none;font-weight:600;}
+.steps{background:var(--faint);border-radius:10px;padding:13px;margin-top:12px;font-size:12px;color:var(--muted);line-height:1.9;}
+.steps b{color:var(--ink);}
+
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px;border-radius:13px;border:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:700;transition:all .18s;width:100%;}
+.btn:active{transform:scale(.97);}
+.btn-green{background:var(--green);color:#fff;margin-top:16px;box-shadow:0 4px 16px rgba(10,107,84,.28);}
+.btn-green:hover{background:var(--green2);}
+.btn-soft{background:var(--green3);color:var(--green);border:2px solid var(--green5);font-size:14px;}
+.btn-ghost{background:transparent;border:2px solid var(--border);color:var(--muted);font-size:14px;}
+
+/* HOME */
+.home-hero{background:linear-gradient(140deg,var(--green4),var(--green));padding:52px 20px 26px;color:#fff;position:relative;overflow:hidden;}
+.home-hero::before{content:'';position:absolute;top:-60px;left:-30px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.04);}
+.home-hero::after{content:'';position:absolute;bottom:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.05);}
+.hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.hero-greet{font-size:13px;opacity:.65;}
+.chg-btn{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:12px;font-family:inherit;font-weight:600;padding:6px 12px;border-radius:20px;cursor:pointer;}
+.hero-title{font-family:'Instrument Serif',serif;font-size:32px;line-height:1.2;margin-bottom:18px;}
+.hero-title em{font-style:italic;opacity:.8;}
+.stat-row{display:flex;gap:8px;flex-wrap:wrap;}
+.stat-chip{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;}
+.home-body{flex:1;padding:22px 16px 32px;}
+.sec-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.09em;margin-bottom:14px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.scard{background:var(--white);border-radius:16px;padding:17px 14px 14px;cursor:pointer;border:1.5px solid var(--border);transition:all .22s;position:relative;overflow:hidden;}
+.scard::after{content:'';position:absolute;bottom:-12px;right:-12px;width:64px;height:64px;border-radius:50%;background:var(--green3);transition:all .3s;}
+.scard:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(10,107,84,.14);border-color:var(--green5);}
+.scard:hover::after{width:90px;height:90px;}
+.scard:active{transform:scale(.97);}
+.si{font-size:26px;margin-bottom:10px;display:block;position:relative;}
+.sn{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.sd{font-size:11px;color:var(--muted);}
+.s-pill{display:inline-block;margin-top:9px;background:var(--green3);color:var(--green);font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;position:relative;}
+
+/* SUBJECT */
+.sub-top{padding:52px 20px 18px;background:var(--white);border-bottom:1px solid var(--border);position:relative;}
+.back{position:absolute;top:14px;left:14px;width:40px;height:40px;border-radius:50%;background:var(--faint);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;transition:all .2s;}
+.back:hover{background:var(--green3);}
+.s-icon{font-size:46px;display:block;margin-bottom:8px;}
+.s-title{font-family:'Instrument Serif',serif;font-size:28px;}
+.s-desc{font-size:13px;color:var(--muted);margin-top:3px;}
+.mode-row{display:flex;gap:8px;padding:14px 16px 0;}
+.mode-btn{flex:1;padding:11px;border-radius:11px;border:2px solid var(--border);cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:var(--muted);background:var(--white);transition:all .2s;font-family:inherit;}
+.mode-btn.on{border-color:var(--green);color:var(--green);background:var(--green3);}
+.t-list{flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;}
+.t-item{background:var(--white);border-radius:13px;padding:16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1.5px solid var(--border);transition:all .2s;}
+.t-item:hover{border-color:var(--green);background:var(--green3);}
+.t-item:active{transform:scale(.98);}
+.t-name{font-size:15px;font-weight:500;}
+.t-arr{width:28px;height:28px;border-radius:50%;background:var(--faint);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);}
+.sub-foot{padding:14px 16px 28px;}
+
+/* LOADING */
+#scr-loading{align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.l-icon{font-size:58px;animation:bob 1.5s ease-in-out infinite;margin-bottom:16px;}
+.l-title{font-family:'Instrument Serif',serif;font-size:26px;margin-bottom:8px;}
+.l-sub{font-size:14px;color:var(--muted);max-width:270px;margin:0 auto;line-height:1.6;}
+.l-bar{width:240px;height:5px;background:var(--border);border-radius:3px;margin:22px auto 0;overflow:hidden;}
+.l-fill{height:100%;width:40%;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:3px;animation:shimmer 1.4s ease-in-out infinite;}
+.dots{display:flex;gap:7px;justify-content:center;margin-top:18px;}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--green);animation:bob 1.1s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}
+.dot:nth-child(3){animation-delay:.4s;}
+.tip-box{margin-top:28px;background:var(--gold2);border:1.5px solid #EDD9A3;border-radius:14px;padding:16px 18px;max-width:320px;text-align:left;}
+.tip-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--gold);margin-bottom:5px;}
+.tip-txt{font-size:13px;color:#7A5B1E;line-height:1.6;}
+
+/* QUIZ */
+.q-top{background:var(--white);border-bottom:1px solid var(--border);padding:14px 16px;position:sticky;top:0;z-index:20;}
+.q-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.q-tag{font-size:11px;font-weight:700;color:var(--green);background:var(--green3);padding:4px 11px;border-radius:20px;}
+.q-frac{font-size:13px;font-weight:700;color:var(--muted);}
+.bail{background:none;border:none;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;padding:4px 8px;border-radius:6px;}
+.bail:hover{background:var(--faint);}
+.pbar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:3px;transition:width .45s ease;}
+.q-body{flex:1;padding:20px 16px 10px;overflow-y:auto;}
+.q-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:10px;}
+.q-text{font-size:17px;font-weight:600;line-height:1.6;margin-bottom:22px;color:var(--ink);}
+.opts{display:flex;flex-direction:column;gap:9px;margin-bottom:14px;}
+.opt{padding:14px 15px;border-radius:13px;border:2px solid var(--border);cursor:pointer;font-size:14px;color:var(--ink);background:var(--white);transition:all .18s;text-align:left;display:flex;align-items:center;gap:13px;font-family:inherit;width:100%;line-height:1.5;}
+.opt:hover:not([disabled]){border-color:var(--green);background:var(--green3);}
+.opt[disabled]{cursor:default;}
+.opt.ok{border-color:var(--teal);background:var(--teal2);color:var(--teal3);}
+.opt.no{border-color:var(--red);background:var(--red2);color:var(--red3);}
+.o-ltr{width:30px;height:30px;min-width:30px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.opt.ok .o-ltr{background:var(--teal);border-color:var(--teal);color:#fff;}
+.opt.no .o-ltr{background:var(--red);border-color:var(--red);color:#fff;}
+.expl{background:#FFFCEB;border:1.5px solid #EEE089;border-radius:13px;padding:15px;font-size:13px;color:#6B5A00;line-height:1.65;display:none;}
+.expl.on{display:block;animation:rise .2s ease;}
+.expl-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;display:block;color:#A0890A;}
+.q-foot{padding:12px 16px 28px;background:var(--faint);border-top:1px solid var(--border);}
+
+/* FLASHCARD */
+.fc-top{padding:18px 16px 14px;border-bottom:1px solid var(--border);background:var(--white);}
+.fc-body{flex:1;padding:22px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.scene{width:100%;perspective:1200px;margin-bottom:20px;}
+.c3d{width:100%;height:240px;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);cursor:pointer;border-radius:20px;}
+.c3d.flip{transform:rotateY(180deg);}
+.face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 26px;text-align:center;}
+.face-f{background:linear-gradient(145deg,var(--green4),var(--green));color:#fff;box-shadow:0 8px 30px rgba(10,107,84,.3);}
+.face-b{background:var(--white);border:2px solid var(--border);transform:rotateY(180deg);box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.fc-lbl{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;opacity:.6;margin-bottom:14px;}
+.fc-txt{font-size:18px;font-weight:600;line-height:1.45;}
+.face-b .fc-lbl{color:var(--muted);opacity:1;}
+.face-b .fc-txt{font-size:15px;font-weight:500;color:var(--ink);line-height:1.65;}
+.tap{font-size:12px;color:var(--muted);opacity:.7;margin-bottom:16px;}
+.fc-btns{display:flex;gap:10px;width:100%;}
+.fc-btns.hide{opacity:0;pointer-events:none;}
+.b-learn{background:var(--red2);color:var(--red3);border:2px solid #FECACA;font-size:14px;}
+.b-know{background:var(--teal2);color:var(--teal3);border:2px solid #A7F3D0;font-size:14px;}
+.fc-ct{display:flex;gap:20px;justify-content:center;font-size:13px;margin-top:14px;font-weight:600;}
+
+/* RESULTS */
+.r-hero{background:linear-gradient(145deg,var(--green4),var(--green));padding:50px 22px 30px;color:#fff;text-align:center;}
+.r-medal{font-size:54px;display:block;margin-bottom:12px;animation:bob 2s ease-in-out infinite;}
+.r-ring{width:118px;height:118px;border-radius:50%;background:rgba(255,255,255,.12);border:3px solid rgba(255,255,255,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px;}
+.r-big{font-family:'Instrument Serif',serif;font-size:44px;line-height:1;}
+.r-of{font-size:13px;opacity:.6;}
+.r-pct{font-size:24px;font-weight:800;margin-bottom:4px;}
+.r-line{font-size:14px;opacity:.75;}
+.r-body{flex:1;padding:22px 16px;overflow-y:auto;}
+.stat-row2{display:flex;gap:9px;margin-bottom:22px;}
+.sc{flex:1;background:var(--white);border-radius:13px;padding:14px;text-align:center;border:1.5px solid var(--border);}
+.sc-n{font-size:24px;font-weight:800;}
+.sc-l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;}
+.rv-list{display:flex;flex-direction:column;gap:9px;}
+.rv{background:var(--white);border-radius:13px;padding:14px;border:1.5px solid var(--border);}
+.rv.rvc{border-left:4px solid var(--teal);}
+.rv.rvw{border-left:4px solid var(--red);}
+.rv-q{font-size:13px;font-weight:600;margin-bottom:7px;line-height:1.45;}
+.rv-a{font-size:12px;line-height:1.5;}
+.ca{color:var(--teal);font-weight:600;}
+.wa{color:var(--red);font-weight:600;}
+.rv-e{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5;font-style:italic;}
+.r-foot{padding:16px 16px 34px;display:flex;flex-direction:column;gap:9px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- SETUP -->
+<div id="scr-setup" class="scr on">
+  <div class="brand">
+    <span class="brand-icon">🩺</span>
+    <div class="brand-name">NurseReady</div>
+    <div class="brand-sub">Nigeria's AI-Powered Nursing Study App 🇳🇬</div>
+  </div>
+  <div class="setup-card">
+    <h2>Enter your Gemini API Key</h2>
+    <p>NurseReady uses Google's free AI to generate 50 fresh NMCN exam questions every session — unlimited, always different, forever free.</p>
+    <div class="inp-row">
+      <input class="inp" id="key-inp" type="password" placeholder="AIzaSy...paste your key here" autocomplete="off">
+      <button class="eye" onclick="toggleEye()" id="eye-btn">👁</button>
+    </div>
+    <p class="hint">Get your free key at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> (sign in with Gmail → Get API Key → Create API Key). No credit card needed.</p>
+    <div class="steps">
+      <b>Quick steps:</b><br>
+      1. Open aistudio.google.com<br>
+      2. Sign in with your Gmail<br>
+      3. Click "Get API Key" in the sidebar<br>
+      4. Click "Create API Key in new project"<br>
+      5. Copy the key that starts with "AIza..." and paste it above
+    </div>
+    <button class="btn btn-green" onclick="saveKey()">Start Studying →</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="scr-home" class="scr">
+  <div class="home-hero">
+    <div class="hero-top">
+      <div class="hero-greet">Welcome, Nurse 👋</div>
+      <button class="chg-btn" onclick="changeKey()">⚙ Key</button>
+    </div>
+    <div class="hero-title">What are you<br><em>studying today?</em></div>
+    <div class="stat-row">
+      <div class="stat-chip" id="st-q">0 questions</div>
+      <div class="stat-chip" id="st-s">0 sessions</div>
+      <div class="stat-chip" id="st-a">— accuracy</div>
+    </div>
+  </div>
+  <div class="home-body">
+    <div class="sec-lbl">Choose a subject</div>
+    <div class="grid" id="sg"></div>
+  </div>
+</div>
+
+<!-- SUBJECT -->
+<div id="scr-subject" class="scr">
+  <div class="sub-top">
+    <button class="back" onclick="go('home')">←</button>
+    <span class="s-icon" id="sicon"></span>
+    <div class="s-title" id="stitle"></div>
+    <div class="s-desc" id="sdesc"></div>
+  </div>
+  <div class="mode-row">
+    <button class="mode-btn on" id="mb-q" onclick="setMode('quiz')">📝 MCQ Quiz (50 Qs)</button>
+    <button class="mode-btn" id="mb-f" onclick="setMode('flash')">🃏 Flashcards (20)</button>
+  </div>
+  <div class="t-list" id="tlist"></div>
+  <div class="sub-foot">
+    <button class="btn btn-green" onclick="begin('All Topics — Random Mix')">⚡ Random Mix — All Topics</button>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="scr-loading" class="scr">
+  <div class="l-icon" id="l-icon">🧠</div>
+  <div class="l-title">Generating with AI</div>
+  <div class="l-sub" id="l-sub">Creating your questions…</div>
+  <div class="l-bar"><div class="l-fill"></div></div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="tip-box">
+    <div class="tip-lbl">💡 Study Tip</div>
+    <div class="tip-txt" id="tip"></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="scr-quiz" class="scr">
+  <div class="q-top">
+    <div class="q-row">
+      <div class="q-tag" id="qtag"></div>
+      <div class="q-frac" id="qfrac"></div>
+      <button class="bail" onclick="if(confirm('End this quiz?'))go('home')">✕ End</button>
+    </div>
+    <div class="pbar"><div class="pfill" id="pf" style="width:0%"></div></div>
+  </div>
+  <div class="q-body">
+    <div class="q-badge" id="qbdg"></div>
+    <div class="q-text" id="qtxt"></div>
+    <div class="opts" id="opts"></div>
+    <div class="expl" id="expl"><span class="expl-lbl">📚 Explanation</span><span id="expl-txt"></span></div>
+  </div>
+  <div class="q-foot">
+    <button class="btn btn-green" id="nxt" onclick="nextQ()" style="display:none;"></button>
+  </div>
+</div>
+
+<!-- FLASHCARD -->
+<div id="scr-flash" class="scr">
+  <div class="fc-top">
+    <div class="q-row">
+      <div class="q-tag" id="ftag"></div>
+      <div class="q-frac" id="ffrac"></div>
+      <button class="bail" onclick="if(confirm('End session?'))go('home')">✕ End</button>
+    </div>
+    <div class="pbar"><div class="pfill" id="fpf" style="width:0%"></div></div>
+  </div>
+  <div class="fc-body">
+    <div class="scene">
+      <div class="c3d" id="c3d" onclick="flipCard()">
+        <div class="face face-f">
+          <div class="fc-lbl">Tap to reveal answer</div>
+          <div class="fc-txt" id="ff"></div>
+        </div>
+        <div class="face face-b">
+          <div class="fc-lbl">Answer</div>
+          <div class="fc-txt" id="fb"></div>
+        </div>
+      </div>
+    </div>
+    <div class="tap" id="tap-hint">👆 Tap the card to flip it</div>
+    <div class="fc-btns hide" id="fcb">
+      <button class="btn b-learn" onclick="mark(false)">😅 Still learning</button>
+      <button class="btn b-know" onclick="mark(true)">✅ Got it!</button>
+    </div>
+    <div class="fc-ct">
+      <span>✅ Known: <b id="fck" style="color:var(--teal)">0</b></span>
+      <span>📖 Learning: <b id="fcl" style="color:var(--red)">0</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="scr-results" class="scr">
+  <div class="r-hero">
+    <span class="r-medal" id="medal">🏆</span>
+    <div class="r-ring">
+      <div class="r-big" id="rn"></div>
+      <div class="r-of" id="rof"></div>
+    </div>
+    <div class="r-pct" id="rpct"></div>
+    <div class="r-line" id="rline"></div>
+  </div>
+  <div class="r-body">
+    <div class="stat-row2">
+      <div class="sc"><div class="sc-n" id="rsc" style="color:var(--teal)"></div><div class="sc-l">Correct</div></div>
+      <div class="sc"><div class="sc-n" id="rsw" style="color:var(--red)"></div><div class="sc-l">Wrong</div></div>
+      <div class="sc"><div class="sc-n" id="rsp" style="color:var(--green)"></div><div class="sc-l">Score</div></div>
+    </div>
+    <div class="sec-lbl" style="margin-bottom:12px;">Full Answer Review</div>
+    <div class="rv-list" id="rvl"></div>
+  </div>
+  <div class="r-foot">
+    <button class="btn btn-green" onclick="retry()">🔄 Retry This Session</button>
+    <button class="btn btn-soft" onclick="go('subject')">📚 Try Another Topic</button>
+    <button class="btn btn-ghost" onclick="go('home')">🏠 Home</button>
+  </div>
+</div>
+
+</div>
+<script>
+const SUBJECTS=[
+  {id:'midwifery',name:'Midwifery',icon:'🤱',desc:'ANC, Labour, Postnatal, Neonatal care',
+   topics:['Antenatal Care (ANC)','Normal Labour & Delivery','Postnatal & Newborn Care','Obstetric Emergencies','Neonatal Nursing & Assessment']},
+  {id:'medsurg',name:'Medical-Surgical',icon:'🏥',desc:'Wounds, CVD, Diabetes, Surgery',
+   topics:['Cardiovascular Nursing','Respiratory Nursing','Diabetes & Endocrine Care','Wound Care & Dressings','Perioperative Nursing']},
+  {id:'community',name:'Community Health',icon:'🌍',desc:'EPI, MUAC, PHC, Disease prevention',
+   topics:['Immunization — EPI & NPHCDA Schedule','MUAC & Acute Malnutrition','Primary Health Care (PHC)','Communicable Disease Control','Health Education & Promotion']},
+  {id:'pharmacology',name:'Pharmacology',icon:'💊',desc:'Drugs, Dosage, Interactions, Calculations',
+   topics:['Oxytocics & Tocolytics','Antibiotics & Antimicrobials','Antihypertensives & Diuretics','Analgesics, Sedatives & Anaesthesia','Drug Dosage Calculations']},
+  {id:'paediatrics',name:'Paediatrics',icon:'👶',desc:'Child health, Growth, Nutrition',
+   topics:['Growth & Development Milestones','Childhood Infectious Diseases','Infant & Young Child Feeding (IYCF)','Child Immunization Schedule','Paediatric Emergencies']},
+  {id:'mentalhealth',name:'Mental Health',icon:'🧠',desc:'Psychiatry, Therapy, Crisis care',
+   topics:['Common Psychiatric Disorders','Therapeutic Communication','Crisis Intervention & Suicide Risk','Psychotropic Medications','Mental Status Examination (MSE)']},
+  {id:'anatomy',name:'Anatomy & Physiology',icon:'🫀',desc:'Body systems, Pathophysiology',
+   topics:['Cardiovascular System A&P','Female Reproductive System','Respiratory System A&P','Neurological System','Gastrointestinal System']},
+  {id:'ethics',name:'Ethics & Law',icon:'⚖️',desc:'NMCN, Patient rights, Conduct',
+   topics:['NMCN Act & Nursing Regulations','Patient Rights & Informed Consent','Professional Nursing Conduct','Nursing Negligence & Malpractice','Documentation & Medical Records']},
+];
+
+const TIPS=[
+  '"What do you do FIRST?" — priority questions are the most common on NMCN exams. Always think ABCs.',
+  'For every drug: classification → mechanism of action → key nursing consideration. In that order.',
+  'Normal adult vitals: BP 90–120/60–80, Pulse 60–100, RR 12–20, Temp 36.5–37.5°C, SpO₂ ≥95%.',
+  'SBAR: Situation → Background → Assessment → Recommendation. Used in every Nigerian hospital.',
+  'The five rights of medication: Right patient, right drug, right dose, right route, right time.',
+  'MgSO4 4g IV loading dose for eclampsia. Antidote if toxicity occurs: Calcium gluconate 10ml IV.',
+  'MUAC <11.5cm = SAM (red). 11.5–12.4cm = MAM (yellow). ≥12.5cm = Normal (green).',
+  'For obstetric emergencies — think HELLP: Haemolysis, Elevated Liver enzymes, Low Platelets.',
+  'Nigeria NPHCDA: BCG & OPV0 at birth. Penta/OPV/PCV/RV at 6, 10, 14 weeks. Measles at 9 months.',
+  'Nurses can delegate tasks but NOT responsibility. The RN remains accountable at all times.',
+];
+
+const $=id=>document.getElementById(id);
+let KEY=localStorage.getItem('nr_key')||'';
+let stats=JSON.parse(localStorage.getItem('nr_stats')||'{"total":0,"correct":0,"sessions":0}');
+let subj=null,topic='',mode='quiz',questions=[],cards=[],cur=0,answers=[],fcK=0,fcL=0;
+
+KEY?initHome():go('setup');
+
+function toggleEye(){const i=$('key-inp'),h=i.type==='password';i.type=h?'text':'password';$('eye-btn').textContent=h?'🙈':'👁';}
+
+function saveKey(){
+  const k=$('key-inp').value.trim();
+  if(!k){alert('Please paste your Gemini API key.');return;}
+  if(!k.startsWith('AIza')){alert('That key does not look right.\nGemini keys start with "AIza..."\nPlease check and try again.');return;}
+  KEY=k;localStorage.setItem('nr_key',k);initHome();
+}
+
+function changeKey(){if(!confirm('Change your API key?'))return;localStorage.removeItem('nr_key');KEY='';go('setup');setTimeout(()=>$('key-inp').value='',300);}
+
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));$('scr-'+id).classList.add('on');window.scrollTo(0,0);}
+
+function initHome(){
+  const acc=stats.total>0?Math.round(stats.correct/stats.total*100):null;
+  $('st-q').textContent=stats.total.toLocaleString()+' questions';
+  $('st-s').textContent=stats.sessions+' sessions';
+  $('st-a').textContent=acc!==null?acc+'% accuracy':'— accuracy';
+  $('sg').innerHTML=SUBJECTS.map(s=>`
+    <div class="scard" onclick="openSubj('${s.id}')">
+      <span class="si">${s.icon}</span>
+      <div class="sn">${s.name}</div>
+      <div class="sd">${s.desc}</div>
+      <div class="s-pill">${s.topics.length} topics</div>
+    </div>`).join('');
+  go('home');
+}
+
+function openSubj(id){
+  subj=SUBJECTS.find(s=>s.id===id);
+  $('sicon').textContent=subj.icon;
+  $('stitle').textContent=subj.name;
+  $('sdesc').textContent=subj.desc;
+  $('tlist').innerHTML=subj.topics.map(t=>`
+    <div class="t-item" onclick="begin('${t}')">
+      <div class="t-name">${t}</div>
+      <div class="t-arr">→</div>
+    </div>`).join('');
+  go('subject');
+}
+
+function setMode(m){
+  mode=m;
+  $('mb-q').className='mode-btn'+(m==='quiz'?' on':'');
+  $('mb-f').className='mode-btn'+(m==='flash'?' on':'');
+}
+
+function begin(t){
+  topic=t;cur=0;answers=[];fcK=0;fcL=0;
+  $('l-icon').textContent=mode==='quiz'?'📝':'🃏';
+  $('l-sub').textContent=mode==='quiz'
+    ?`Generating 50 NMCN-style questions on "${t}"… (takes ~15 seconds)`
+    :`Generating 20 flashcards on "${t}"…`;
+  $('tip').textContent=TIPS[Math.floor(Math.random()*TIPS.length)];
+  go('loading');
+  mode==='quiz'?genQuiz():genFlash();
+}
+
+async function gemini(prompt){
+  const res=await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEY}`,
+    {method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:8192,temperature:0.8}})}
+  );
+  if(!res.ok){
+    const e=await res.json().catch(()=>({}));
+    if(res.status===400)throw new Error('Invalid API key. Go back to Setup and re-enter your Gemini key.');
+    if(res.status===429)throw new Error('Too many requests. Wait 60 seconds and try again.');
+    throw new Error(e?.error?.message||'API error '+res.status);
+  }
+  const d=await res.json();
+  const raw=d?.candidates?.[0]?.content?.parts?.[0]?.text||'';
+  const clean=raw.replace(/```json\n?|\n?```/g,'').trim();
+  const s=clean.indexOf('['),e=clean.lastIndexOf(']');
+  if(s===-1||e===-1)throw new Error('AI returned an unexpected format. Please try again.');
+  return JSON.parse(clean.slice(s,e+1));
+}
+
+async function genQuiz(){
+  try{
+    questions=await gemini(
+`You are a senior Nigerian nursing exam writer creating questions for NMCN licensing exam preparation.
+
+Generate EXACTLY 50 multiple choice questions on: "${topic}" in ${subj.name} nursing.
+
+Return ONLY a raw JSON array. No markdown fences. No explanation. No preamble. Just the array starting with [ and ending with ].
+
+[
+  {
+    "question": "Full clinical question ending with a question mark?",
+    "options": ["A. option text", "B. option text", "C. option text", "D. option text"],
+    "answer": 0,
+    "explanation": "Why this answer is correct. Why the others are wrong."
+  }
+]
+
+STRICT RULES:
+- answer = 0 (A), 1 (B), 2 (C), or 3 (D)
+- Generate ALL 50 questions — never stop early
+- Nigerian clinical context: NPHCDA schedule, NMCN standards, Nigerian drug names, local hospital practice
+- Question types across the 50: 15 priority/what-to-do-first, 15 assessment/identification, 10 pharmacology, 5 patient education, 5 ethics/law
+- Difficulty: 20 easy, 20 medium, 10 hard
+- Every question must be unique — no repetition`
+    );
+    if(questions.length<10)throw new Error('AI returned too few questions ('+questions.length+'). Please try again.');
+    renderQ();go('quiz');
+  }catch(e){alert('Could not generate questions:\n\n'+e.message);go('subject');}
+}
+
+async function genFlash(){
+  try{
+    cards=await gemini(
+`Generate EXACTLY 20 nursing flashcards on: "${topic}" in ${subj.name} for Nigerian NMCN exam preparation.
+
+Return ONLY a raw JSON array. No markdown. No preamble.
+
+[{"front":"term, drug name, concept, or clinical question","back":"definition, key values, doses, nursing priorities, or mnemonic"}]
+
+Cover: key nursing terms, drugs with doses and side effects, normal lab/vital values, clinical mnemonics, NMCN high-yield facts, Nigerian clinical context. Generate all 20.`
+    );
+    renderFlash();go('flash');
+  }catch(e){alert('Error: '+e.message);go('subject');}
+}
+
+function renderQ(){
+  const q=questions[cur],total=questions.length;
+  $('qtag').textContent=subj.icon+' '+subj.name;
+  $('qfrac').textContent=(cur+1)+' / '+total;
+  $('pf').style.width=(cur/total*100)+'%';
+  $('qbdg').textContent='Question '+(cur+1)+' of '+total;
+  $('qtxt').textContent=q.question;
+  $('opts').innerHTML=['A','B','C','D'].map((l,i)=>`
+    <button class="opt" onclick="pick(${i})">
+      <span class="o-ltr">${l}</span>
+      <span>${(q.options[i]||'').replace(/^[A-D]\.\s*/,'')}</span>
+    </button>`).join('');
+  $('expl').className='expl';
+  $('nxt').style.display='none';
+}
+
+function pick(idx){
+  const q=questions[cur],correct=Number(q.answer);
+  document.querySelectorAll('.opt').forEach(o=>o.setAttribute('disabled',true));
+  document.querySelectorAll('.opt')[correct].classList.add('ok');
+  if(idx!==correct)document.querySelectorAll('.opt')[idx].classList.add('no');
+  $('expl-txt').textContent=q.explanation||'';
+  $('expl').className='expl on';
+  answers.push({ok:idx===correct,idx,correct,q:q.question,opts:q.options,expl:q.explanation||''});
+  const nb=$('nxt');
+  nb.textContent=cur===questions.length-1?'🏁 View My Results':'Next Question →';
+  nb.style.display='flex';
+  window.scrollTo(0,0);
+}
+
+function nextQ(){cur++;cur>=questions.length?showResults():renderQ();window.scrollTo(0,0);}
+
+function renderFlash(){
+  const fc=cards[cur],total=cards.length;
+  $('ftag').textContent=subj.icon+' '+subj.name;
+  $('ffrac').textContent=(cur+1)+' / '+total;
+  $('fpf').style.width=(cur/total*100)+'%';
+  $('ff').textContent=fc.front;
+  $('fb').textContent=fc.back;
+  $('fck').textContent=fcK;
+  $('fcl').textContent=fcL;
+  $('c3d').classList.remove('flip');
+  $('fcb').className='fc-btns hide';
+  $('tap-hint').style.opacity='.7';
+}
+
+function flipCard(){
+  $('c3d').classList.add('flip');
+  $('fcb').className='fc-btns';
+  $('tap-hint').style.opacity='0';
+}
+
+function mark(know){
+  if(know)fcK++;else fcL++;
+  cur++;
+  cur>=cards.length?fcResults():renderFlash();
+}
+
+function fcResults(){
+  const pct=Math.round(fcK/cards.length*100);
+  saveStats(cards.length,fcK);
+  setResHeader(fcK,cards.length+' known',pct);
+  $('rsc').textContent=fcK+' known';
+  $('rsw').textContent=fcL+' learning';
+  $('rsp').textContent=pct+'%';
+  $('rvl').innerHTML=cards.map(c=>`
+    <div class="rv rvc">
+      <div class="rv-q">${c.front}</div>
+      <div class="rv-e">${c.back}</div>
+    </div>`).join('');
+  go('results');
+}
+
+function showResults(){
+  const total=answers.length,correct=answers.filter(a=>a.ok).length,pct=Math.round(correct/total*100);
+  saveStats(total,correct);
+  setResHeader(correct,total+' correct',pct);
+  $('rsc').textContent=correct;
+  $('rsw').textContent=total-correct;
+  $('rsp').textContent=pct+'%';
+  $('rvl').innerHTML=answers.map((a,i)=>`
+    <div class="rv ${a.ok?'rvc':'rvw'}">
+      <div class="rv-q">Q${i+1}: ${a.q}</div>
+      <div class="rv-a">${a.ok
+        ?`<span class="ca">✓ Correct — ${(a.opts[a.correct]||'').replace(/^[A-D]\.\s*/,'')}</span>`
+        :`<span class="wa">✗ You chose: ${(a.opts[a.idx]||'').replace(/^[A-D]\.\s*/,'')}</span><br><span class="ca">✓ Correct: ${(a.opts[a.correct]||'').replace(/^[A-D]\.\s*/,'')}</span>`}
+      </div>
+      ${a.expl?`<div class="rv-e">${a.expl}</div>`:''}
+    </div>`).join('');
+  go('results');
+}
+
+function setResHeader(n,of,pct){
+  $('medal').textContent=pct>=80?'🏆':pct>=60?'⭐':'📖';
+  $('rn').textContent=n;
+  $('rof').textContent=of;
+  $('rpct').textContent=pct+'%';
+  $('rline').textContent=pct>=80?'Outstanding — NMCN ready performance! 🎉':pct>=60?'Good work! Review the questions you missed.':pct>=40?'Keep going — revisit this topic and try again.':'This topic needs more study. Review and retry!';
+}
+
+function saveStats(total,correct){
+  stats.total+=total;stats.correct+=(correct||0);stats.sessions++;
+  localStorage.setItem('nr_stats',JSON.stringify(stats));
+}
+
+function retry(){
+  cur=0;answers=[];fcK=0;fcL=0;
+  if(mode==='quiz'){renderQ();go('quiz');}else{renderFlash();go('flash');}
+}
+</script>
+</body>
+</html>
